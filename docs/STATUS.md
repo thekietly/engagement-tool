@@ -38,7 +38,7 @@ Everything not done lives in [SETUP.md](SETUP.md), with priorities and exact ste
 
 ## Environment facts
 
-- GitHub: `kietly-web/engagement-tool`, **public** repository (docs are public; never commit real data or secrets). `main` not protected yet.
+- GitHub: `thekietly/engagement-tool`, **public** repository (docs are public; never commit real data or secrets). `main` not protected yet. It replaced `kietly-web/engagement-tool` on 23/11/2026: same history with new commit IDs, and PR numbers restarted at 1. The PR links for ET-1 to ET-9 above (and older PRs up to 21) point to the old repo, which still exists.
 - Hosting (ADR-001): Cloudflare Workers free plan, `https://engagement-tool.lythekiet333.workers.dev`, deployed by Workers Builds from `main`.
 - Database (ADR-002): Neon free, AWS Singapore, database `neondb` (not the Neon project's name). Reached through Hyperdrive `engagement-tool-db` as `app_worker`, caching disabled. A Neon MCP connector is configured in Claude but not yet authorised.
 - Google Cloud project with YouTube Data API v3 and an OAuth web client (Testing mode); must never get a billing account (ADR-005).
