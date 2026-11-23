@@ -16,7 +16,7 @@ None of these needs a payment method. If any step asks for a card, stop and tell
   ```bash
   DATABASE_OWNER_URL='<owner connection string>' pnpm --filter @et/db migrate
   ```
-  It should print `Applied: 0001_tenancy.sql, …, 0006_widget_config.sql`.
+  It should print `Applied: 0001_tenancy.sql, …, 0007_scene_overlay.sql`.
 - [ ] A6 **Worker database login**: Neon Console → SQL Editor, run the `CREATE ROLE app_worker …` statement from SETUP §1 with a password from `openssl rand -base64 32`. Then run the check query there; it must return `f, f, f`.
 - [ ] A7 **Hyperdrive** (caching must be off):
   ```bash
