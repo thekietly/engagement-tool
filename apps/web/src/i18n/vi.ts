@@ -274,6 +274,8 @@ export const vi = {
   "alerts.howto": "Cách dùng: thêm lệnh, lưu, rồi gửi thử. Khi đang live, khán giả gõ lệnh vào chat (ví dụ !tim) là thông báo hiện trên OBS.",
   "channel.title": "Kênh YouTube",
   "channel.account": "Tài khoản và dữ liệu",
+  "poll.presetsTooBig": "Danh sách bình chọn soạn sẵn đã quá dài. Xoá bớt hoặc rút ngắn câu hỏi và lựa chọn.",
+  "poll.deleteConfirm": "Xoá bình chọn soạn sẵn này?",
 } as const;
 
 export type MessageKey = keyof typeof vi;

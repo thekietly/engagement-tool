@@ -168,6 +168,19 @@ describe("widget config", () => {
     expect((await b.request(`/api/workspaces/${ws}/widgets/leaderboard/config`, json({ polls: [preset] })).then((r) => r.json())) as object).not.toHaveProperty("polls");
   });
 
+  it("refuses saved polls that would overflow the stored config, and keeps what was saved", async () => {
+    const h = await makeHarness();
+    const { b, ws } = await link(h);
+    const long = (n: number) => "ữ".repeat(n);
+    const big = Array.from({ length: 12 }, (_, i) => ({ question: `${i} ${long(115)}`, options: Array.from({ length: 6 }, (_, j) => `${j} ${long(36)}`) }));
+    await b.request(`/api/workspaces/${ws}/widgets/poll/config`, json({ polls: big.slice(0, 1) }));
+    const res = await b.request(`/api/workspaces/${ws}/widgets/poll/config`, json({ polls: big }));
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "config_too_large" });
+    const read = (await (await b.request(`/api/workspaces/${ws}/widgets/poll/config`)).json()) as { polls: unknown[] };
+    expect(read.polls).toHaveLength(1);
+  });
+
   it("moderators read but can't save; outsiders see nothing; unknown widgets are rejected", async () => {
     const h = await makeHarness();
     const { b, ws } = await owner(h);

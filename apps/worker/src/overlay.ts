@@ -19,6 +19,9 @@ function storedConfig(raw: unknown, widget: ConfigurableWidget) {
   const polls = (raw as { polls?: unknown } | null)?.polls;
   return { ...parseWidgetConfig(raw, widget), ...(widget === "poll" && { polls: parsePollPresets(polls) }) };
 }
+// The column allows 8,192 bytes of jsonb text, which adds spaces after separators; Vietnamese takes 2–3 bytes a
+// letter, so a full list of saved polls can get close. Refuse with a clear error instead of a check violation.
+const CONFIG_BUDGET_BYTES = 7_000;
 const sceneAad = (workspaceId: string) => `overlay:${workspaceId}:scene`;
 
 // OBS reads these when a link is dragged onto its window (OBS 25+): https://obsproject.com/tools/browser-drag-and-drop
@@ -144,9 +147,11 @@ export function overlayManageRoutes(auth: ReturnType<typeof authRoutes>, deps: A
     const config = await withWorkspace(c.var.db, { memberId: c.var.memberId, workspaceId: ws.id }, async (tx) => {
       const existing = (await widgetConfigs.get(tx, widget)) as Record<string, unknown>;
       const merged = storedConfig({ ...existing, ...(body && typeof body === "object" ? body : {}) }, widget);
+      if (new TextEncoder().encode(JSON.stringify(merged)).length > CONFIG_BUDGET_BYTES) return null;
       await widgetConfigs.save(tx, widget, merged);
       return merged;
     });
+    if (!config) return c.json({ error: "config_too_large" }, 400);
     try {
       await deps.liveSession(c.env, ws.id).configChanged(widget, parseWidgetConfig(config, widget));
     } catch {

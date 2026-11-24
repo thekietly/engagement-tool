@@ -212,9 +212,13 @@ function PollComposer({
     try {
       setPresets((await api.savePollPresets(workspaceId, next)).polls);
       setNote(message);
-    } catch {
-      setNote(t("state.error"));
+    } catch (e) {
+      setNote(e instanceof ApiError && e.code === "config_too_large" ? t("poll.presetsTooBig") : t("state.error"));
     }
+  }
+
+  function remove(i: number) {
+    if (window.confirm(t("poll.deleteConfirm"))) void savePresets(presets.filter((_, j) => j !== i), null);
   }
 
   async function open(e: FormEvent) {
@@ -310,7 +314,7 @@ function PollComposer({
                     {t("poll.loadPreset")}
                   </button>
                   {isOwner && (
-                    <button type="button" className="button danger small" onClick={() => void savePresets(presets.filter((_, j) => j !== i), null)}>
+                    <button type="button" className="button danger small" onClick={() => remove(i)}>
                       {t("poll.deletePreset")}
                     </button>
                   )}

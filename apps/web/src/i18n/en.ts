@@ -276,4 +276,6 @@ export const en: Record<MessageKey, string> = {
   "alerts.howto": "How it works: add a command, save, then send a test. While live, viewers type the command in chat (for example !tim) and the alert shows in OBS.",
   "channel.title": "YouTube channel",
   "channel.account": "Account and data",
+  "poll.presetsTooBig": "Your saved polls are too long to store. Delete some or shorten the questions and options.",
+  "poll.deleteConfirm": "Delete this saved poll?",
 };
