@@ -19,5 +19,5 @@ export function readEditorMessage(data: unknown): Exclude<SceneEditorMessage, { 
 
 const clampInt = (value: number, min: number, max: number) => (Number.isFinite(value) ? Math.min(max, Math.max(min, Math.round(value))) : min);
 
-export const clampX = (value: number) => clampInt(value, 0, CANVAS.width);
-export const clampY = (value: number) => clampInt(value, 0, CANVAS.height);
+export const clampX = (value: number) => clampInt(value, 0, CANVAS.width - 320);
+export const clampY = (value: number) => clampInt(value, 0, CANVAS.height - 80);

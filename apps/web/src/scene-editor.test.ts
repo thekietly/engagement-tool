@@ -16,6 +16,6 @@ describe("readEditorMessage", () => {
 
 describe("clamp", () => {
   it("keeps typed coordinates on the canvas", () => {
-    expect([clampX(-5), clampX(2500), clampX(12.4), clampY(Number.NaN), clampY(1081)]).toEqual([0, 1920, 12, 0, 1080]);
+    expect([clampX(-5), clampX(2500), clampX(12.4), clampY(Number.NaN), clampY(1081)]).toEqual([0, 1600, 12, 0, 1000]);
   });
 });

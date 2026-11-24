@@ -72,14 +72,14 @@ export function StylePanel({ workspaceId }: { workspaceId: string }) {
 
   async function save() {
     if (!themes) return;
-    try {
-      const results = await Promise.all([...dirty].map(async (w) => [w, (await api.saveWidgetConfig(workspaceId, w, { theme: themes[w] })).theme] as const));
-      setThemes((prev) => (prev ? { ...prev, ...Object.fromEntries(results) } : prev));
-      setDirty(new Set());
-      setSaved(true);
-    } catch {
-      setError(true);
-    }
+    const widgets = [...dirty];
+    const results = await Promise.allSettled(widgets.map((w) => api.saveWidgetConfig(workspaceId, w, { theme: themes[w] })));
+    const done = new Map<SceneEditorWidget, OverlayTheme>();
+    results.forEach((r, i) => r.status === "fulfilled" && done.set(widgets[i]!, r.value.theme));
+    setThemes((prev) => (prev ? { ...prev, ...Object.fromEntries(done) } : prev));
+    setDirty((prev) => new Set([...prev].filter((w) => !done.has(w))));
+    setSaved(done.size === widgets.length);
+    setError(done.size !== widgets.length);
   }
 
   function resetLayout() {
@@ -130,11 +130,11 @@ export function StylePanel({ workspaceId }: { workspaceId: string }) {
               <div className="xy">
                 <label>
                   {t("style.x")}
-                  <input type="number" min={0} max={CANVAS.width} step={10} value={theme.x} onChange={(e) => update("x", clampX(Number(e.target.value)))} />
+                  <input type="number" min={0} max={CANVAS.width - 320} step={10} value={theme.x} onChange={(e) => update("x", clampX(Number(e.target.value)))} />
                 </label>
                 <label>
                   {t("style.y")}
-                  <input type="number" min={0} max={CANVAS.height} step={10} value={theme.y} onChange={(e) => update("y", clampY(Number(e.target.value)))} />
+                  <input type="number" min={0} max={CANVAS.height - 80} step={10} value={theme.y} onChange={(e) => update("y", clampY(Number(e.target.value)))} />
                 </label>
               </div>
             )}
